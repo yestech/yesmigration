@@ -371,9 +371,6 @@ class Migrator(connection_builder: ConnectionBuilder,
   import Migrator._
   import RichConnection._
 
-  // Load the log4jdbc database wrapper driver.
-  Class.forName("net.sf.log4jdbc.DriverSpy")
-
   private final
   val logger = LoggerFactory.getLogger(this.getClass)
 

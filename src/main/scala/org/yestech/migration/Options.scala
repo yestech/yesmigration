@@ -211,6 +211,12 @@ case object PrimaryKey
   extends ColumnOption
 
 /**
+ * Specifies an Auto Increment Column
+ */
+case object AutoIncrement
+  extends ColumnOption
+
+/**
  * Specify the scale for a DECIMAL column.
  */
 case class Scale(value: Int)

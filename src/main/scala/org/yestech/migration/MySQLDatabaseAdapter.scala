@@ -7,8 +7,6 @@ class MysqlTextColumnDefinition
   val sql = "TEXT"
 }
 
-object AutoIncrement extends ColumnOption
-
 class MySQLDatabaseAdapter(override val schemaNameOpt: Option[String]) extends DatabaseAdapter(schemaNameOpt) {
 
   override def removeIndexSql(schema_name_opt: Option[String], table_name: String, index_name: String): String = ""
@@ -19,6 +17,11 @@ class MySQLDatabaseAdapter(override val schemaNameOpt: Option[String]) extends D
 
   override def quoteTableName(tableName: String): String = tableName
   override def quoteColumnName(columnName: String): String = columnName
+
+  override def lockTableSql(table_name: String) = {
+//    "select 1"
+    "LOCK TABLES " + table_name + " WRITE "
+  }
 
   protected def alterColumnSql(schema_name_opt: Option[String], column_definition: ColumnDefinition) = {
     new java.lang.StringBuilder(512)

@@ -401,6 +401,7 @@ class ColumnDefinition
           appendCheckSql(name, expr)
         }
 
+        case AutoIncrement => sb.append(" AUTO_INCREMENT ")
         case _ =>
       }
     }
