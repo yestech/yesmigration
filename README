@@ -1,0 +1,5 @@
+A Scala based migration tool currently it understands databases and is a fork of scala-migrations - http://code.google.com/p/scala-migrations/
+
+Please visit http://code.google.com/p/scala-migrations/ for code examples.  In the future the goal is to support more databases both RDBMS and NoSql.
+
+Dependencies:  The only dependencies needed at runtime are slf4j.
