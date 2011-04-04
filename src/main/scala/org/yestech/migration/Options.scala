@@ -47,7 +47,11 @@ package org.yestech.migration
  * The base trait for all column options.  This is not a sealed class
  * so database specific column options can be defined.
  */
-trait ColumnOption
+trait ColumnOption {
+  def sql: String = {
+    ""
+  }
+}
 
 /**
  * The base trait for all foreign key options.
@@ -91,13 +95,11 @@ case class Default(value: String)
  * integer values.
  */
 object Default {
-  def apply(i: Int): Default =
-  {
+  def apply(i: Int): Default = {
     Default(i.toString)
   }
 
-  def apply(i: Long): Default =
-  {
+  def apply(i: Long): Default = {
     Default(i.toString)
   }
 }
@@ -106,14 +108,13 @@ object Default {
  * A limit on the size of a column type.
  */
 case class Limit(expr: String)
-  extends ColumnOption
-{
+  extends ColumnOption {
   try {
     val length = Integer.parseInt(expr)
     if (length < 0) {
       val message = "The limit in " +
-                    this +
-                    " must be greater than or equal to one."
+        this +
+        " must be greater than or equal to one."
       throw new IllegalArgumentException(message)
     }
   }
@@ -127,8 +128,7 @@ case class Limit(expr: String)
  * integer values.
  */
 object Limit {
-  def apply(i: Int): Limit =
-  {
+  def apply(i: Int): Limit = {
     Limit(i.toString)
   }
 }
@@ -140,8 +140,7 @@ object Limit {
 case class Name(name: String)
   extends CheckOption
   with ForeignKeyOption
-  with IndexOption
-{
+  with IndexOption {
   if (name eq null) {
     throw new IllegalArgumentException("The name cannot be null.")
   }
@@ -162,6 +161,7 @@ case class Check(expr: String)
  */
 case class NamedCheck(name: String, expr: String)
   extends ColumnOption
+
 // NamedCheck cannot inherit from Check, it causes a compiler error.
 //   http://lampsvn.epfl.ch/trac/scala/ticket/425
 // & http://lampsvn.epfl.ch/trac/scala/ticket/816
@@ -196,8 +196,7 @@ case class OnUpdate(action: ForeignKeyConstraintAction)
  * Specify the precision for a DECIMAL column.
  */
 case class Precision(value: Int)
-  extends ColumnOption
-{
+  extends ColumnOption {
   if (value < 1) {
     val message = "The precision cannot be less than one."
     throw new IllegalArgumentException(message)
@@ -214,14 +213,17 @@ case object PrimaryKey
  * Specifies an Auto Increment Column
  */
 case object AutoIncrement
-  extends ColumnOption
+  extends ColumnOption {
+  override def sql = {
+    " AUTO_INCREMENT "
+  }
+}
 
 /**
  * Specify the scale for a DECIMAL column.
  */
 case class Scale(value: Int)
-  extends ColumnOption
-{
+  extends ColumnOption {
   if (value < 0) {
     val message = "The scale cannot be less than zero."
     throw new IllegalArgumentException(message)
@@ -266,16 +268,14 @@ case object TriggerPrivilege
  * an extractor for the column names implement it as a non-case class
  * with an explicit extractor.
  */
-object PrivilegeWithColumns
-{
+object PrivilegeWithColumns {
   /**
    * An extractor to return a sequence of column names.
    *
    * @param a any object
    * @return an optional sequence of column names
    */
-  def unapply(a: Any): Option[Seq[String]] =
-  {
+  def unapply(a: Any): Option[Seq[String]] = {
     a match {
       case p: PrivilegeWithColumns =>
         Some(p.columns)
@@ -289,8 +289,7 @@ object PrivilegeWithColumns
  * A base class for all privileges that take a list of columns to affect.
  */
 abstract class PrivilegeWithColumns
-  extends GrantPrivilegeType
-{
+  extends GrantPrivilegeType {
   val columns: Seq[String]
 }
 
