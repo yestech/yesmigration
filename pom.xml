@@ -102,8 +102,10 @@
                 <version>2.1.2</version>
                 <executions>
                     <execution>
+                        <id>attach-sources</id>
+                        <phase>package</phase>
                         <goals>
-                            <goal>package</goal>
+                            <goal>jar-no-fork</goal>
                         </goals>
                     </execution>
                 </executions>
