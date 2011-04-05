@@ -87,12 +87,10 @@ object Vendor {
           "JDBC driver class " +
           "name to this function.")
 
-      case _ if (driver_class_name.startsWith("jdbc:mysql://")) => forDriver("com.mysql.jdbc.Driver")
-      case _ =>
+      case dc @ _ if (dc.startsWith("jdbc:mysql://")) => forDriver("com.mysql.jdbc.Driver")
+      case dc @ _ =>
         throw new scala.MatchError("No vendor can be found for the JDBC " +
-          "driver class '" +
-          driver_class_name +
-          "'.'")
+          "driver class '" + dc + "'.'")
     }
   }
 

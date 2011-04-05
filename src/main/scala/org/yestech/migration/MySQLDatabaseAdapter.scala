@@ -100,7 +100,7 @@ class MySQLDatabaseAdapter(override val schemaNameOpt: Option[String]) extends D
     for (option <- tableOptions) {
       option match {
         case CharacterSet(Unicode) => sql.append(" CHARSET=utf8 ")
-        case _ => sql.append(option.toSql)
+        case opt @ _ => sql.append(opt.toSql)
       }
     }
     sql.toString
