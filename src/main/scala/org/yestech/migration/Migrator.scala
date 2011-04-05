@@ -673,8 +673,8 @@ class Migrator(connection_builder: ConnectionBuilder,
     withLoggingConnection(CommitUponReturnOrException) { schema_connection =>
       logger.debug("Getting an exclusive lock on the '{}' table.",
                    schemaMigrationsTableName)
-      val sql = adapter.lockTableSql(schemaMigrationsTableName)
-      schema_connection.withPreparedStatement(sql) { statement =>
+      val lockSql = adapter.lockTableSql(schemaMigrationsTableName)
+      schema_connection.withPreparedStatement(lockSql) { statement =>
         statement.execute()
       }
 
@@ -784,6 +784,12 @@ class Migrator(connection_builder: ConnectionBuilder,
           }
         }
       }
+
+      val unlockSql = adapter.unlockTableSql(schemaMigrationsTableName)
+      schema_connection.withPreparedStatement(unlockSql) { statement =>
+        statement.execute()
+      }
+
     }
   }
 

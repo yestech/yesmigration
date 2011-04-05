@@ -238,6 +238,10 @@ class DatabaseAdapter(val schemaNameOpt: Option[String])
     lockTableSql(schemaNameOpt, table_name)
   }
 
+  def unlockTableSql(table_name: String) = {
+    " "
+  }
+
   protected
   def alterColumnSql(schema_name_opt: Option[String],
                      column_definition: ColumnDefinition): String

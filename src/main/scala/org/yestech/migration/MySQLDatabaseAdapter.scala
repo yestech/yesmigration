@@ -48,7 +48,12 @@ class MySQLDatabaseAdapter(override val schemaNameOpt: Option[String]) extends D
 
   override def lockTableSql(table_name: String) = {
     //    "select 1"
-    "LOCK TABLES " + table_name + " WRITE "
+    "LOCK TABLE " + table_name + " WRITE "
+  }
+
+  override def unlockTableSql(table_name: String) = {
+    //    "select 1"
+    "UNLOCK TABLE "
   }
 
   protected def alterColumnSql(schema_name_opt: Option[String], column_definition: ColumnDefinition) = {
