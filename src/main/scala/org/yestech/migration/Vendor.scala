@@ -40,15 +40,17 @@ sealed trait Vendor
 
 case object Derby
   extends Vendor
+
 case object Oracle
   extends Vendor
+
 case object Postgresql
   extends Vendor
+
 case object Mysql
   extends Vendor
 
-object Vendor
-{
+object Vendor {
   /**
    * Return the database vendor for the given database driver class
    * name.
@@ -60,8 +62,7 @@ object Vendor
    *         null, scala.MatchError if an appropriate vendor cannot be
    *         found
    */
-  def forDriver(driver_class_name: String): Vendor =
-  {
+  def forDriver(driver_class_name: String): Vendor = {
     driver_class_name match {
       case "oracle.jdbc.driver.OracleDriver" =>
         Oracle
@@ -83,14 +84,15 @@ object Vendor
 
       case null =>
         throw new java.lang.IllegalArgumentException("Must pass a non-null " +
-                                                     "JDBC driver class " +
-                                                     "name to this function.")
+          "JDBC driver class " +
+          "name to this function.")
 
+      case _ if (driver_class_name.startsWith("jdbc:mysql://")) => forDriver("com.mysql.jdbc.Driver")
       case _ =>
         throw new scala.MatchError("No vendor can be found for the JDBC " +
-                                   "driver class '" +
-                                   driver_class_name +
-                                   "'.'")
+          "driver class '" +
+          driver_class_name +
+          "'.'")
     }
   }
 
@@ -103,8 +105,7 @@ object Vendor
    *         null, scala.MatchError if an appropriate vendor cannot be
    *         found
    */
-  def forDriver(driver_class: Class[_]): Vendor =
-  {
+  def forDriver(driver_class: Class[_]): Vendor = {
     if (driver_class eq null) {
       val message = "Must pass a non-null JDBC driver class to this function."
       throw new java.lang.IllegalArgumentException(message)
