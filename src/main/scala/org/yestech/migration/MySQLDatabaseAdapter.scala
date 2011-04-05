@@ -1,10 +1,37 @@
 package org.yestech.migration
 
 class MysqlTextColumnDefinition
-  extends ColumnDefinition
-{
+  extends ColumnDefinition {
   override
   val sql = "TEXT"
+}
+
+/**
+ * Specifies an Auto Increment Column
+ */
+case object AutoIncrement
+  extends ColumnOption {
+  override def toSql = {
+    " AUTO_INCREMENT "
+  }
+}
+
+/**
+ * Engine type for a table
+ */
+case class Engine(name: String) extends TableOption {
+  override def toSql = {
+    " ENGINE=" + name + " "
+  }
+}
+
+/**
+ * Comment for a table
+ */
+case class Comment(comment: String) extends TableOption {
+  override def toSql = {
+    " COMMENT='" + comment + "' "
+  }
 }
 
 class MySQLDatabaseAdapter(override val schemaNameOpt: Option[String]) extends DatabaseAdapter(schemaNameOpt) {
@@ -13,13 +40,14 @@ class MySQLDatabaseAdapter(override val schemaNameOpt: Option[String]) extends D
 
   override val addingForeignKeyConstraintCreatesIndex: Boolean = false
 
-  override val unquotedNameConverter =  CasePreservingUnquotedNameConverter
+  override val unquotedNameConverter = CasePreservingUnquotedNameConverter
 
   override def quoteTableName(tableName: String): String = tableName
+
   override def quoteColumnName(columnName: String): String = columnName
 
   override def lockTableSql(table_name: String) = {
-//    "select 1"
+    //    "select 1"
     "LOCK TABLES " + table_name + " WRITE "
   }
 
@@ -35,7 +63,7 @@ class MySQLDatabaseAdapter(override val schemaNameOpt: Option[String]) extends D
   }
 
   override
-  def columnDefinitionFactory (column_type: SqlType, character_set_opt: Option[CharacterSet]): ColumnDefinition = {
+  def columnDefinitionFactory(column_type: SqlType, character_set_opt: Option[CharacterSet]): ColumnDefinition = {
 
     column_type match {
       case BigintType =>
@@ -59,5 +87,17 @@ class MySQLDatabaseAdapter(override val schemaNameOpt: Option[String]) extends D
       case VarcharType =>
         new DefaultVarcharColumnDefinition
     }
+  }
+
+  override def generateSql(tableOptions: List[TableOption]): String = {
+    val sql = new java.lang.StringBuilder(512)
+
+    for (option <- tableOptions) {
+      option match {
+        case CharacterSet(Unicode) => sql.append(" CHARSET=utf8 ")
+        case _ => sql.append(option.toSql)
+      }
+    }
+    sql.toString
   }
 }

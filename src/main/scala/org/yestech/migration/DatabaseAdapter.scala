@@ -571,4 +571,8 @@ class DatabaseAdapter(val schemaNameOpt: Option[String])
       case None => ""
     }
   }
+
+  def generateSql(tableOptions: List[TableOption]): String = {
+    ""
+  }
 }

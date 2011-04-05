@@ -44,45 +44,49 @@ package org.yestech.migration
  */
 
 /**
- * The base trait for all column options.  This is not a sealed class
- * so database specific column options can be defined.
+ * Base Trait for all Options
  */
-trait ColumnOption {
-  def sql: String = {
+trait DatabaseOption {
+  def toSql: String = {
     ""
   }
 }
+/**
+ * The base trait for all column options.  This is not a sealed class
+ * so database specific column options can be defined.
+ */
+trait ColumnOption extends DatabaseOption
 
 /**
  * The base trait for all foreign key options.
  */
-sealed trait ForeignKeyOption
+sealed trait ForeignKeyOption extends DatabaseOption
 
 /**
  * The base trait for all grant privilege types.
  */
-sealed trait GrantPrivilegeType
+sealed trait GrantPrivilegeType extends DatabaseOption
 
 /**
  * The base trait for all index options.
  */
-sealed trait IndexOption
+sealed trait IndexOption extends DatabaseOption
 
 /**
  * The base trait for all check options.
  */
-sealed trait CheckOption
+sealed trait CheckOption extends DatabaseOption
 
 /**
  * The base trait for all table options.
  */
-sealed trait TableOption
+trait TableOption extends DatabaseOption
 
 /**
  * The base trait for all character set definitions.
  */
 case class CharacterSet(name: CharacterSetName)
-  extends ColumnOption
+  extends ColumnOption with TableOption
 
 /**
  * A default value for a column.
@@ -208,16 +212,6 @@ case class Precision(value: Int)
  */
 case object PrimaryKey
   extends ColumnOption
-
-/**
- * Specifies an Auto Increment Column
- */
-case object AutoIncrement
-  extends ColumnOption {
-  override def sql = {
-    " AUTO_INCREMENT "
-  }
-}
 
 /**
  * Specify the scale for a DECIMAL column.

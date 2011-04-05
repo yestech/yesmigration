@@ -401,7 +401,7 @@ class ColumnDefinition
           appendCheckSql(name, expr)
         }
 
-        case _ => sb.append(option.sql)
+        case _ => sb.append(option.toSql)
       }
     }
 
